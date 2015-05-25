@@ -3,12 +3,9 @@ var app = express()
 var bodyParser = require("body-parser")
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
-var mongoose = require('mongoose')
-var _ = require("underscore")
-mongoose.connect('mongodb://localhost/attendance', function(){
-      //mongoose.connection.db.dropDatabase()
-});
-var Event = mongoose.model('Event', { studentId: String, weekday: String, status: String })
+
+var db = require("./config/db")
+var Event = require("./models/event")(db)
 
 app.get("/attendance/", function( req, res ){
   Event.find({}, function( err, docs ){
@@ -30,7 +27,7 @@ app.get("/attendance/students/:studentId", function( req, res ){
 
 app.post("/attendance/", function( req, res ){
   var evt = new Event({ 
-    studentId: req.body.studentId,
+    githubUserId: req.body.githubUserId,
     weekday: req.body.weekday,
     status: req.body.status
   });
@@ -42,5 +39,5 @@ app.post("/attendance/", function( req, res ){
 })
 
 app.listen(2371, function(){
-  console.log("app running on port 3000")
+  console.log("app running on port 2371")
 })
