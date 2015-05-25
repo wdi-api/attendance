@@ -10,25 +10,25 @@ mongoose.connect('mongodb://localhost/attendance', function(){
 });
 var Event = mongoose.model('Event', { studentId: String, weekday: String, status: String })
 
-app.get("/", function( req, res ){
+app.get("/attendance/", function( req, res ){
   Event.find({}, function( err, docs ){
     res.send(docs)
   })
 })
 
-app.get("/:weekday", function( req, res ){
+app.get("/attendance/:weekday", function( req, res ){
   Event.find({weekday: req.params.weekday}, function( err, docs ){
     res.send(docs)
   })
 })
 
-app.get("/students/:studentId", function( req, res ){
+app.get("/attendance/students/:studentId", function( req, res ){
   Event.find({studentId: req.params.studentId}, function( err, docs ){
     res.send(docs)
   })
 })
 
-app.post("/", function( req, res ){
+app.post("/attendance/", function( req, res ){
   var evt = new Event({ 
     studentId: req.body.studentId,
     weekday: req.body.weekday,
@@ -41,6 +41,6 @@ app.post("/", function( req, res ){
   });
 })
 
-app.listen(3000, function(){
+app.listen(2371, function(){
   console.log("app running on port 3000")
 })
