@@ -15,7 +15,7 @@ app.get("/attendance/", function( req, res ){
 
 app.get("/attendance/:weekday", function( req, res ){
   Event.find({weekday: req.params.weekday}, function( err, docs ){
-    res.send(docs)
+    res.jsonp(docs)
   })
 })
 
@@ -25,16 +25,24 @@ app.get("/attendance/students/:studentId", function( req, res ){
   })
 })
 
-app.post("/attendance/", function( req, res ){
+app.post("/attendance/:weekday", function( req, res ){
   var evt = new Event({ 
     githubUserId: req.body.githubUserId,
-    weekday: req.body.weekday,
+    weekday: req.params.weekday,
     status: req.body.status
   });
-  evt.save(function (err) {
+  Event.findOneAndUpdate({
+    weekday: req.params.weekday,
+    githubUserId: req.body.githubUserId
+  },{
+    status: req.body.status
+  },{
+    new: true,
+    upsert: true
+  },function(err,evt){
     if (err) // ...
       res.send(err)
-    res.send( evt )
+    res.jsonp( evt )
   });
 })
 

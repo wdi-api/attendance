@@ -1,21 +1,13 @@
 # Attendance API
 
-## `get /attendance`
-
 ## `get /attendance/:weekday`
 
 Where weekday is of format "w03d04", returns all events for that day.
 
-## `post /attendance`
+## `post /attendance/weekday`
 
 Creates a new attendance event. Required parameters are:
 
-- studentID
-- weekday
+- githubUserId
 - status
   - one of `tardy`, `present`, `absent`
-
-## `get /attendance/students/:studentId`
-
-Returns attendance history for a given student
-
