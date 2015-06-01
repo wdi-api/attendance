@@ -7,12 +7,6 @@ app.use(bodyParser.json())
 var db = require("./config/db")
 var Event = require("./models/event")(db)
 
-app.get("/attendance/", function( req, res ){
-  Event.find({}, function( err, docs ){
-    res.send(docs)
-  })
-})
-
 app.get("/attendance/:weekday", function( req, res ){
   Event.find({weekday: req.params.weekday}, function( err, docs ){
     res.jsonp(docs)
@@ -44,6 +38,13 @@ app.post("/attendance/:weekday", function( req, res ){
       res.send(err)
     res.jsonp( evt )
   });
+})
+
+app.get("*", function( req, res ){
+  res.jsonp({
+    error: "Not found",
+    documentation: "https://github.com/wdidc/api-attendance"
+  })
 })
 
 app.listen(2371, function(){
