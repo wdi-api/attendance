@@ -6,6 +6,7 @@ app.use(bodyParser.json())
 
 var db = require("./config/db")
 var Event = require("./models/event")(db)
+var authenticateUser = require("./authentication")
 
 app.get("/attendance/:weekday", function( req, res ){
   Event.find({weekday: req.params.weekday}, function( err, docs ){
@@ -20,24 +21,33 @@ app.get("/attendance/students/:studentId", function( req, res ){
 })
 
 app.post("/attendance/:weekday", function( req, res ){
-  var evt = new Event({ 
-    githubUserId: req.body.githubUserId,
-    weekday: req.params.weekday,
-    status: req.body.status
-  });
-  Event.findOneAndUpdate({
-    weekday: req.params.weekday,
-    githubUserId: req.body.githubUserId
-  },{
-    status: req.body.status
-  },{
-    new: true,
-    upsert: true
-  },function(err,evt){
-    if (err) // ...
-      res.send(err)
-    res.jsonp( evt )
-  });
+  authenticateUser( req.query.access_token, function( currentUser ){
+    if(currentUser){
+      var evt = new Event({ 
+	githubUserId: req.body.githubUserId,
+	weekday: req.params.weekday,
+	status: req.body.status
+      });
+      Event.findOneAndUpdate({
+	weekday: req.params.weekday,
+	githubUserId: req.body.githubUserId
+      },{
+	status: req.body.status
+      },{
+	new: true,
+	upsert: true
+      },function(err,evt){
+	if (err) // ...
+	  res.send(err)
+	res.jsonp( evt )
+      });
+    }else{
+      res.jsonp({
+        error: "Authorization Required",
+	documentation: "https://github.com/wdidc/api-attendance"
+      })  
+    }
+  })
 })
 
 app.get("*", function( req, res ){
