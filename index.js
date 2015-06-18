@@ -43,7 +43,7 @@ app.post("/attendance/:weekday", function( req, res ){
       });
     }else{
       res.jsonp({
-        error: "Authorization Required",
+        error: "Not Authorized",
 	documentation: "https://github.com/wdidc/api-attendance"
       })  
     }

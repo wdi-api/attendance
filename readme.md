@@ -20,3 +20,5 @@ Creates a new attendance event. Required parameters are:
 Writing to this API requires membership to the wdidc organization github.
 
 When sending a POST request, include a github access token in the query parameters
+
+To create a personal access token, visit https://github.com/settings/tokens
