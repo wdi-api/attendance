@@ -1,11 +1,20 @@
 # Attendance API
 
 
-## `get /attendance/:weekday`
+
+## Get Attendance by day
+
+```
+get /attendance/:weekday
+```
 
 Where weekday is of format "w03d04", returns all events for that day.
 
-## `post /attendance/:weekday`
+## Take attendance 
+
+```
+post /attendance/:weekday
+```
 
 **Requires Authorization**
 
@@ -14,6 +23,12 @@ Creates a new attendance event. Required parameters are:
 - githubUserId
 - status
   - one of `tardy`, `present`, `absent`
+### Input
+
+| Name | Type | Description |
+|---|---|---|
+| `githubUserId` | `string` | **Required.** The student’s GitHub user id | 
+| `status` | `string` | **Required.** one of "tardy", "present", or "absent"| 
 
 ## Authorization
 
