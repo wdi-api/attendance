@@ -1,29 +1,22 @@
 # Attendance API
 
-
-
 ## Get Attendance by day
 
 ```
-get /attendance/:weekday
+get /attendance/:date
 ```
 
-Where weekday is of format "w03d04", returns all events for that day.
+Where date is of format "YYYY-MM-DD", returns all events for that day.
 
 ## Take attendance 
 
 ```
-post /attendance/:weekday
+post /attendance/:date
 ```
 
 **Requires Authorization**
 
-Creates a new attendance event. Required parameters are:
-
-- githubUserId
-- status
-  - one of `tardy`, `present`, `absent`
-### Input
+Creates a new attendance event. 
 
 | Name | Type | Description |
 |---|---|---|
