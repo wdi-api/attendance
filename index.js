@@ -18,7 +18,7 @@ app.get("/attendance/?", function( req, res ){
   Event.distinct("weekday", function( err, docs ){
     var attendances = []
     for( var i = 0; i < docs.length; i++ ){
-      attendances.push({weekday: docs[i], url:"http://api.wdidc.org/attendances/"+docs[i]}) 
+      attendances.push({weekday: docs[i], url:"http://api.wdidc.org/attendance/"+docs[i]}) 
     }
     res.jsonp(attendances)
   })
