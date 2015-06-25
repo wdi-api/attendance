@@ -15,7 +15,7 @@ app.get("/attendance/:weekday", function( req, res ){
 })
 
 app.get("/attendance/students/:studentId", function( req, res ){
-  Event.find({studentId: req.params.studentId}, function( err, docs ){
+  Event.find({githubUserId: req.params.studentId}, function( err, docs ){
     res.send(docs)
   })
 })
