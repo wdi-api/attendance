@@ -14,6 +14,16 @@ app.get("/attendance/:weekday", function( req, res ){
   })
 })
 
+app.get("/attendance/?", function( req, res ){
+  Event.distinct("weekday", function( err, docs ){
+    var attendances = []
+    for( var i = 0; i < docs.length; i++ ){
+      attendances.push({weekday: docs[i], url:"http://api.wdidc.org/attendances/"+docs[i]}) 
+    }
+    res.jsonp(attendances)
+  })
+})
+
 app.get("/attendance/students/:githubUserId", function( req, res ){
   Event.find({githubUserId: req.params.githubUserId}, function( err, docs ){
     res.send(docs)
