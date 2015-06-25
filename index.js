@@ -14,8 +14,8 @@ app.get("/attendance/:weekday", function( req, res ){
   })
 })
 
-app.get("/attendance/students/:studentId", function( req, res ){
-  Event.find({githubUserId: req.params.studentId}, function( err, docs ){
+app.get("/attendance/students/:githubUserId", function( req, res ){
+  Event.find({githubUserId: req.params.githubUserId}, function( err, docs ){
     res.send(docs)
   })
 })
