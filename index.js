@@ -26,7 +26,7 @@ app.get("/attendance/?", function( req, res ){
 
 app.get("/attendance/students/:githubUserId", function( req, res ){
   Event.find({githubUserId: req.params.githubUserId}, function( err, docs ){
-    res.send(docs)
+    res.jsonp(docs)
   })
 })
 
