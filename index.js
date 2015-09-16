@@ -7,6 +7,7 @@ app.use(bodyParser.json())
 var db = require("./config/db")
 var Event = require("./models/event")(db)
 var authenticateUser = require("./authentication")
+var _ = require("underscore")
 
 app.get("/attendance/:weekday", function( req, res ){
   Event.find({weekday: req.params.weekday}, function( err, docs ){
@@ -18,7 +19,7 @@ app.get("/attendance/?", function( req, res ){
   Event.distinct("weekday", function( err, docs ){
     var attendances = []
     for( var i = 0; i < docs.length; i++ ){
-      attendances.push({weekday: docs[i], url:"http://api.wdidc.org/attendance/"+docs[i]}) 
+      attendances.push({weekday: docs[i], url:"http://api.wdidc.org/attendance/"+docs[i]})
     }
     res.jsonp(attendances)
   })
@@ -30,10 +31,30 @@ app.get("/attendance/students/:githubUserId", function( req, res ){
   })
 })
 
+app.get("/attendance/summary/:githubUserId/", function( req,res ){
+  var obj = {
+    days: 0,
+    tardy: 0,
+    present: 0,
+    absent: 0,
+    combinedAbsence : 0,
+    exceedsThreshold: false
+  }
+  Event.find({githubUserId: req.params.githubUserId}, function(err, events){
+    _.each(events, function(event){
+      obj.days += 1
+      obj[event.status] += 1
+    })
+    obj.combinedAbsence = obj.tardy / 2 + obj.absent
+    obj.exceedsThreshold = (obj.combinedAbsence >= 4)
+    res.send(obj)
+  })
+})
+
 app.post("/attendance/:weekday", function( req, res ){
   authenticateUser( req.query.access_token, function( currentUser ){
     if(currentUser){
-      var evt = new Event({ 
+      var evt = new Event({
 	githubUserId: req.body.githubUserId,
 	weekday: req.params.weekday,
 	status: req.body.status
@@ -55,7 +76,7 @@ app.post("/attendance/:weekday", function( req, res ){
       res.jsonp({
         error: "Not Authorized",
 	documentation: "https://github.com/wdidc/api-attendance"
-      })  
+      })
     }
   })
 })
