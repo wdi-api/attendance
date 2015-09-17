@@ -32,6 +32,7 @@ app.get("/attendance/students/:githubUserId", function( req, res ){
 })
 
 app.get("/attendance/summary/:githubUserId/", function( req,res ){
+  // test!
   var summary = {
     days: 0,
     tardy: 0,
