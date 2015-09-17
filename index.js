@@ -32,22 +32,23 @@ app.get("/attendance/students/:githubUserId", function( req, res ){
 })
 
 app.get("/attendance/summary/:githubUserId/", function( req,res ){
-  var obj = {
+  var summary = {
     days: 0,
     tardy: 0,
     present: 0,
     absent: 0,
     combinedAbsence : 0,
+    outcomesThreshold: 4,
     exceedsThreshold: false
   }
   Event.find({githubUserId: req.params.githubUserId}, function(err, events){
     _.each(events, function(event){
-      obj.days += 1
-      obj[event.status] += 1
+      summary.days += 1
+      summary[event.status] += 1
     })
-    obj.combinedAbsence = obj.tardy / 2 + obj.absent
-    obj.exceedsThreshold = (obj.combinedAbsence >= 4)
-    res.send(obj)
+    summary.combinedAbsence = summary.tardy / 2 + summary.absent
+    summary.exceedsThreshold = (summary.combinedAbsence >= summary.outcomesThreshold)
+    res.send(summary)
   })
 })
 
