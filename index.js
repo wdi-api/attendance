@@ -47,7 +47,7 @@ app.get("/attendance/summary/:githubUserId/", function( req,res ){
       summary[event.status] += 1
     })
     summary.combinedAbsence = summary.tardy / 2 + summary.absent
-    summary.exceedsThreshold = (summary.combinedAbsence >= summary.outcomesThreshold)
+    summary.exceedsThreshold = (summary.combinedAbsence > summary.outcomesThreshold)
     res.send(summary)
   })
 })
