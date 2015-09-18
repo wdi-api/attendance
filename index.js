@@ -9,6 +9,31 @@ var Event = require("./models/event")(db)
 var authenticateUser = require("./authentication")
 var _ = require("underscore")
 
+app.get("/attendance/summary/", function( req,res ){
+  Event.find({}, function(err, events) {
+    console.log(events)
+    var attendanceSummary = {}
+    var defaultSummary = {
+      days: 0,
+      tardy: 0,
+      present: 0,
+      absent: 0,
+      combinedAbsence : 0,
+      outcomesThreshold: 4,
+      exceedsThreshold: false
+    }
+    _.each(events ,function(event){
+      console.log(event.githubUserId)
+      attendanceSummary[event.githubUserId] = attendanceSummary[event.githubUserId] || defaultSummary
+      attendanceSummary[event.githubUserId]["days"] += 1
+      attendanceSummary[event.githubUserId][event.status] += 1
+      attendanceSummary[event.githubUserId].combinedAbsence = attendanceSummary[event.githubUserId].tardy / 2 + attendanceSummary[event.githubUserId].absent
+      attendanceSummary[event.githubUserId].exceedsThreshold = (attendanceSummary[event.githubUserId].combinedAbsence > attendanceSummary[event.githubUserId].outcomesThreshold)
+
+    })
+    res.jsonp(attendanceSummary)
+  })
+})
 app.get("/attendance/:weekday", function( req, res ){
   Event.find({weekday: req.params.weekday}, function( err, docs ){
     res.jsonp(docs)
@@ -31,27 +56,6 @@ app.get("/attendance/students/:githubUserId", function( req, res ){
   })
 })
 
-app.get("/attendance/summary/:githubUserId/", function( req,res ){
-  // test!
-  var summary = {
-    days: 0,
-    tardy: 0,
-    present: 0,
-    absent: 0,
-    combinedAbsence : 0,
-    outcomesThreshold: 4,
-    exceedsThreshold: false
-  }
-  Event.find({githubUserId: req.params.githubUserId}, function(err, events){
-    _.each(events, function(event){
-      summary.days += 1
-      summary[event.status] += 1
-    })
-    summary.combinedAbsence = summary.tardy / 2 + summary.absent
-    summary.exceedsThreshold = (summary.combinedAbsence > summary.outcomesThreshold)
-    res.jsonp(summary)
-  })
-})
 
 app.post("/attendance/:weekday", function( req, res ){
   authenticateUser( req.query.access_token, function( currentUser ){
